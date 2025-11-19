@@ -1,9 +1,12 @@
 #pragma once
+#include <vector>
+#include "dir.cpp"
 
 extern "C" {
-  void _touch(int file_count, const char* file_names[]);
-  void _mv(const char* old_file, const char* new_file);
+  void _touch(int file_count, vector<File*> files);
+  void _mv(File* old_file, File* new_file);
   void _ls();
-  void _cd(const char* old_dir, const char* new_dir);
-  void _echo(const char* text);
+  void _cd(File* old_dir, File* new_dir);
+  void _echo(File* text);
 }
+
