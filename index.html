@@ -34,8 +34,11 @@
             padding: 15px;
             flex: 1;
             overflow-y: auto;
-            margin-bottom: 10px;
             font-size: 14px;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
         }
         #output::-webkit-scrollbar {
             width: 8px;
@@ -62,15 +65,25 @@
         }
         #input-container {
             display: flex;
-            gap: 10px;
             align-items: center;
+            padding: 0 15px;
+            font-size: 14px;
+            background: #000000;
+            flex-shrink: 0;
+            border-top: 1px solid #333333;
+            padding-top: 10px;
+        }
+        .prompt-symbol {
+            color: #00ff00;
+            margin-right: 5px;
+            user-select: none;
         }
         #command-input {
             flex: 1;
             background: #000000;
             border: none;
             color: #ffffff;
-            padding: 10px;
+            padding: 5px 0;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             outline: none;
@@ -87,13 +100,12 @@
     <div class="container">
         <div id="output"></div>
         <div id="input-container">
-            <span style="color: #00ff00;">$</span>
-            <input type="text" id="command-input" placeholder="">
+            <span class="prompt-symbol">$</span>
+            <input type="text" id="command-input" placeholder="" autocomplete="off" spellcheck="false">
         </div>
     </div>
     
     <script src="main.js"></script>
-    <script src="app.js"></script>
+    <script src="src/app.js"></script>
 </body>
 </html>
-

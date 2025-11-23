@@ -18,25 +18,44 @@ async function initWasm() {
 }
 
 // Start initialization when page loads
-if (typeof Module !== 'undefined') {
-    initWasm();
+function startInit() {
+    // Ensure output scrolls to bottom on initial load
+    const output = document.getElementById('output');
+    if (output) {
+        // Use setTimeout to ensure DOM is fully rendered
+        setTimeout(() => {
+            output.scrollTop = output.scrollHeight;
+        }, 0);
+    }
+    
+    if (typeof Module !== 'undefined') {
+        initWasm();
+    } else {
+        addOutput('Error: Module not found. Make sure main.js is loaded.', 'error');
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startInit);
 } else {
-    window.addEventListener('load', function() {
-        if (typeof Module !== 'undefined') {
-            initWasm();
-        } else {
-            addOutput('Error: Module not found. Make sure main.js is loaded.', 'error');
-        }
-    });
+    // DOM is already ready
+    startInit();
 }
 
 function addOutput(text, className = '') {
     const output = document.getElementById('output');
+    if (!output) return;
+    
     const line = document.createElement('div');
     line.className = 'output-line ' + className;
     line.textContent = text;
     output.appendChild(line);
-    output.scrollTop = output.scrollHeight;
+    
+    // Auto-scroll to bottom to show latest output (like a real terminal)
+    // Use requestAnimationFrame to ensure DOM update is complete
+    requestAnimationFrame(() => {
+        output.scrollTop = output.scrollHeight;
+    });
 }
 
 function executeCommand() {
@@ -50,8 +69,8 @@ function executeCommand() {
         return;
     }
     
-    // Show the command with prompt
-    addOutput('$ ' + command);
+    // Show the command (prompt is already visible in input)
+    addOutput(command);
     
     // Parse and execute
     const parts = command.split(/\s+/);
@@ -151,9 +170,14 @@ function executeCommand() {
 }
 
 // Allow Enter key to execute
-document.getElementById('command-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        executeCommand();
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('command-input');
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                executeCommand();
+            }
+        });
     }
 });
 
