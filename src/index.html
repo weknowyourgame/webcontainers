@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Filesystem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        h1 {
+            display: none;
+        }
+        #output {
+            background: #000000;
+            border: none;
+            padding: 15px;
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        #output::-webkit-scrollbar {
+            width: 8px;
+        }
+        #output::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        #output::-webkit-scrollbar-thumb {
+            background: #333333;
+        }
+        .output-line {
+            margin: 2px 0;
+            white-space: pre-wrap;
+            color: #ffffff;
+        }
+        .prompt {
+            color: #00ff00;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .success {
+            color: #00ff00;
+        }
+        #input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #command-input {
+            flex: 1;
+            background: #000000;
+            border: none;
+            color: #ffffff;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+        }
+        #command-input::placeholder {
+            color: #666666;
+        }
+        button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="output"></div>
+        <div id="input-container">
+            <span style="color: #00ff00;">$</span>
+            <input type="text" id="command-input" placeholder="">
+        </div>
+    </div>
+    
+    <script src="main.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
