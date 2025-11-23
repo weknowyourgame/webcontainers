@@ -1,51 +1,71 @@
-#include <vector>
+#include "fs.h"
+#include <algorithm>
+#include <cstddef>
+#include <memory>
 #include <string>
-#include <map>
+#include <vector>
 
-static std::map<std::string, std::vector<char>> disk;
+bool VirtualFS::touch(const std::string& path, const std::vector<std::string> fileNames){
+  // access the dir
+  Directory* currDir = VirtualFS::navigateChild(path);
+  if(currDir == nullptr) return false;
 
-class File {
-public:
-  std::string name;
-  std::string extension;
-  std::string path;
-  std::vector<char> data;
-};
-
-class Directory {
-public:
-  std::vector<Directory*> subfolders;
-  std::vector<File*> files;
-  std::string path;
-
-  Directory(const std::string& dir) : name(dir) {}
-};
-
-class VirtualFS {
-public:
-
-  bool _touch(int file_count, vector<File*> files){
-
+  for(const auto& f : fileNames){
+    currDir->files.push_back(std::make_unique<File>(f));
   }
+
+  return true;
+}
+
+// only supports dirs for now
+bool VirtualFS::mv(const std::string& src, const std::string& dst){
+  // get the srcP and destination Dir
+    Directory* srcParent = navigateParent(src);
+    Directory* dstDir = navigateChild(dst);
+
+    if(srcParent == nullptr || dstDir == nullptr) return false;
+
+    // get the name of dir to move
+    size_t pos = src.rfind('/');
+    std::string srcDirName = src.substr(pos + 1);
+    
+    // find and move from srcP to dstDir
+    for(auto it = srcParent->dirs.begin(); it != srcParent->dirs.end(); ++it) {
+        if((*it)->name == srcDirName) {
+            dstDir->dirs.push_back(std::move(*it));
+            srcParent->dirs.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+
+std::vector<std::string> VirtualFS::ls(const std::string& path){
+  std::vector<std::string> files;
+  // get the curr Dir
+  Directory* curr = navigateChild(path);
+
+  for(const auto& file : curr->files) {
+    files.push_back(file->name);
+  }
+  return files;
+}
+
+// navigating child doesnt make sense
+bool VirtualFS::mkdir(const std::string& path){
+  // get the currDir
+  Directory* parentDir = navigateParent(path);
+  if(parentDir == nullptr) return false;
   
-  bool _mv(File* old_file, File* new_file){
-
-  }
+  // get the dirName
+  size_t pos = path.rfind('/');
+  std::string dirName = path.substr(pos + 1);
   
-  std::vector<std::string> _ls(){
+  parentDir->dirs.push_back(std::make_unique<Directory>(dirName));
+  return true;
+}
 
-  }
-
-  bool _cd(File* old_dir, File* new_dir){
-
-  }
-
-  std::string _echo(File* text){
-
-  }
-
-  bool _mkdir(Directory* dir_name){
-
-  }
-};
-
+std::string VirtualFS::echo(const std::string& text){
+  return text;
+}

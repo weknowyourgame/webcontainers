@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <algorithm>
 
 struct File {
   std::string name;
@@ -51,13 +52,36 @@ class VirtualFS {
     return rootDir;
   }
 
+  Directory* navigateDirHelper(Directory* node, const std::string& dirName) {
+    if(node == nullptr) return nullptr;
+    if(node->name == dirName) return node;
+    
+    for(auto& d : node->dirs) {
+      Directory* found = navigateDirHelper(d.get(), dirName);
+      if(found != nullptr) return found;
+    }
+    return nullptr;
+}
+
 public:
-  bool touch(const std::string& path);
+  bool touch(const std::string& path, const std::vector<std::string> fileNames);
   bool mv(const std::string& src, const std::string& dst);
   std::vector<std::string> ls(const std::string& path);
   bool mkdir(const std::string& path);
   std::string echo(const std::string& text);
-
+  
+  Directory* navigateChild(const std::string& path) {
+    size_t pos = path.rfind('/');
+    std::string dirName = (pos == std::string::npos) ? "" : path.substr(0, pos);
+    return navigateDirHelper(root.get(), dirName);
+  }
+  
+  Directory* navigateParent(const std::string& path) {
+    size_t pos = path.rfind('/');
+    std::string parentPath = path.substr(0, pos);
+    if(parentPath.empty()) return root.get();
+    return navigateDirHelper(root.get(), parentPath);
+  }
+  
   VirtualFS() : root(initRoot()) {}
-
 };
