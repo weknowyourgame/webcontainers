@@ -1,5 +1,7 @@
 # Virtual Filesystem
 
+<img width="965" height="669" alt="Screenshot from 2025-11-23 14-40-51" src="https://github.com/user-attachments/assets/ea314318-2959-4592-9204-19345f182c93" />
+
 A virtual filesystem implementation that runs entirely in the browser using WebAssembly. This project demonstrates how to build a filesystem in C++ and expose it to JavaScript through Emscripten.
 
 ## Overview
